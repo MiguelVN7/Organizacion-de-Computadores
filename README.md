@@ -62,6 +62,7 @@ Reducir el consumo de compuertas en una ALU es un problema de optimización de r
 La escalabilidad en diseño digital se logra aplicando el principio de modularidad. Una estrategia eficiente para ampliar a 64 o 128 bits es encadenar más bloques ALU16C, de modo que se construya una ALU mayor simplemente replicando módulos ya probados. Este enfoque reduce el esfuerzo de rediseño y facilita la verificación, pues basta comprobar la correcta propagación del carry entre módulos. Por ejemplo, una ALU64 se implementaría con cuatro ALU16C en cascada y una ALU128 con ocho. Si el rendimiento es crítico, se podrían agrupar los bloques en unidades de 32 bits y usar técnicas de carry-lookahead a nivel de bloque, reduciendo la latencia global. Además, mantener una interfaz uniforme (x[n], y[n], banderas) asegura compatibilidad con arquitecturas superiores. En resumen, la clave para escalar es diseñar bloques básicos reutilizables y definir un protocolo claro de comunicación entre ellos, de forma que la extensión sea un proceso de ensamblaje más que de rediseño.
 
 **Video de Sustentación:**
-Se encuentra en el siguiente link: 
+Se encuentra en el siguiente link: Explicación Parcial 1 Organización de Computadores por Miguel Villegas
+https://youtu.be/NEIVBswWmxE
 
 
