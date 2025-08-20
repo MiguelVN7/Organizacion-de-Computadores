@@ -1,0 +1,53 @@
+/**
+ * ALU de 16 bits con carry-in y carry-out
+ * Soporta todas las operaciones estándar de la ALU original
+ * más manejo de acarreo para permitir encadenamiento
+ */
+CHIP ALU16 {
+    IN  
+        x[16], y[16],  // 16-bit inputs        
+        zx, // zero the x input?
+        nx, // negate the x input?
+        zy, // zero the y input?
+        ny, // negate the y input?
+        f,  // compute (out = x + y) or (out = x & y)?
+        no, // negate the out output?
+        cin; // carry input for arithmetic operations
+    
+    OUT 
+        out[16], // 16-bit output
+        zr,      // if (out == 0) equals 1, else 0
+        ng,      // if (out < 0) equals 1, else 0
+        cout;    // carry output for arithmetic operations
+
+    PARTS:
+    // X
+    Mux16(a=x, b=false, sel=zx, out=x1);
+    Not16(in=x1, out=nx1);
+    Mux16(a=x1, b=nx1, sel=nx, out=X);
+
+    // Y  
+    Mux16(a=y, b=false, sel=zy, out=y1);
+    Not16(in=y1, out=ny1);
+    Mux16(a=y1, b=ny1, sel=ny, out=Y);
+
+    // AND X, Y
+    And16(a=X, b=Y, out=andResult);
+    
+    // ADD con Carry
+    Add16(a=X, b=Y, cin=cin, out=addResult, cout=cout);
+    
+    // Seleccionar resultado (ADD or AND)
+    Mux16(a=andResult, b=addResult, sel=f, out=funcResult);
+    
+    // NG
+    Not16(in=funcResult, out=nFuncResult);
+    Mux16(a=funcResult, b=nFuncResult, sel=no, out=out, 
+          out[15]=ng, out[0..7]=outLow, out[8..15]=outHigh);
+
+    // ZR
+    Or8Way(in=outLow, out=or1);
+    Or8Way(in=outHigh, out=or2);
+    Or(a=or1, b=or2, out=notZero);
+    Not(in=notZero, out=zr);
+}
