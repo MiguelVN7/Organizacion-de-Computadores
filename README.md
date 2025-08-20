@@ -1,7 +1,8 @@
 # Organizacion-de-Computadores
 Contiene toda la documentación pedida para la entrega 1 de la materia:
 
-##**Descripción del Diseño.**
+**Descripción del Diseño.**
+
 La ALU32 es una unidad aritmético-lógica de 32 bits construida de forma modular a partir de dos bloques ALU16, los cuales procesan en paralelo la parte baja y alta de los operandos. Este enfoque favorece la reutilización de componentes previamente verificados y simplifica la escalabilidad del diseño a anchos mayores. El diseño implementa operaciones aritméticas y lógicas siguiendo la convención establecida en la ALU de 16 bits del curso Nand2Tetris, extendida a 32 bits. Entre sus capacidades se encuentran la suma, la resta, la conjunción lógica (AND), así como la negación condicional de entradas y salidas, además de la detección de condiciones de estado como cero, negativo y overflow.
 
 **Señales de entrada**
@@ -39,10 +40,10 @@ Overflow (overflow): Se calcula comparando los signos de los operandos normaliza
 Con este diseño, la ALU32 logra un balance entre modularidad, claridad y funcionalidad, cumpliendo con las operaciones fundamentales de una arquitectura de 32 bits y permitiendo extender el modelo fácilmente a anchos superiores.
 
 
-##**Diagrama/Esquema del Diseño.**
+**Diagrama/Esquema del Diseño.**
 Se encuentra subido en este repositorio...
 
-##**Preguntas de Pensamiento Crítico.**
+##Preguntas de Pensamiento Crítico.
 **1. Modularidad:** Ventajas y desventajas de usar dos ALU16 vs. una ALU32 monolítica. (Ej. ventajas: reutilizo; desventajas: latencia en carry.)
 La modularidad es un principio fundamental en diseño digital porque permite reutilizar componentes, simplificar la verificación y mejorar la mantenibilidad. Usar dos ALU16 para construir una ALU32 ofrece claras ventajas: se aprovecha un bloque probado y confiable, lo cual reduce la complejidad de diseño y facilita el escalamiento a arquitecturas más grandes. Además, esto se alinea con la filosofía de los procesadores reales, donde bloques más pequeños se encadenan. Sin embargo, la principal desventaja es la latencia en la propagación del carry: al depender de la salida de la ALU baja para la entrada de la ALU alta, la suma se vuelve más lenta frente a una ALU monolítica optimizada. Asimismo, duplicar componentes puede generar mayor consumo de compuertas frente a un diseño específico de 32 bits. En conclusión, la decisión entre modularidad y monolitismo depende de si se prioriza simplicidad y reutilización (ALU16) o rendimiento absoluto y optimización de hardware (ALU32 dedicada).
 
@@ -58,7 +59,7 @@ Reducir el consumo de compuertas en una ALU es un problema de optimización de r
 **5. Escalabilidad:** Estrategia para extender el diseño a 64 o 128 bits sin reescribir todo. (Ej. enlazar más ALU16 con carry chain.)
 La escalabilidad en diseño digital se logra aplicando el principio de modularidad. Una estrategia eficiente para ampliar a 64 o 128 bits es encadenar más bloques ALU16C, de modo que se construya una ALU mayor simplemente replicando módulos ya probados. Este enfoque reduce el esfuerzo de rediseño y facilita la verificación, pues basta comprobar la correcta propagación del carry entre módulos. Por ejemplo, una ALU64 se implementaría con cuatro ALU16C en cascada y una ALU128 con ocho. Si el rendimiento es crítico, se podrían agrupar los bloques en unidades de 32 bits y usar técnicas de carry-lookahead a nivel de bloque, reduciendo la latencia global. Además, mantener una interfaz uniforme (x[n], y[n], banderas) asegura compatibilidad con arquitecturas superiores. En resumen, la clave para escalar es diseñar bloques básicos reutilizables y definir un protocolo claro de comunicación entre ellos, de forma que la extensión sea un proceso de ensamblaje más que de rediseño.
 
-##**Video de Sustentación:**
+**Video de Sustentación:**
 Se encuentra en el siguiente link: 
 
 
