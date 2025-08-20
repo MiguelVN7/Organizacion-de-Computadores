@@ -41,9 +41,11 @@ Con este diseño, la ALU32 logra un balance entre modularidad, claridad y funcio
 
 
 **Diagrama/Esquema del Diseño.**
+
 Se encuentra subido en este repositorio...
 
-##Preguntas de Pensamiento Crítico.
+**Preguntas de Pensamiento Crítico.**
+
 **1. Modularidad:** Ventajas y desventajas de usar dos ALU16 vs. una ALU32 monolítica. (Ej. ventajas: reutilizo; desventajas: latencia en carry.)
 La modularidad es un principio fundamental en diseño digital porque permite reutilizar componentes, simplificar la verificación y mejorar la mantenibilidad. Usar dos ALU16 para construir una ALU32 ofrece claras ventajas: se aprovecha un bloque probado y confiable, lo cual reduce la complejidad de diseño y facilita el escalamiento a arquitecturas más grandes. Además, esto se alinea con la filosofía de los procesadores reales, donde bloques más pequeños se encadenan. Sin embargo, la principal desventaja es la latencia en la propagación del carry: al depender de la salida de la ALU baja para la entrada de la ALU alta, la suma se vuelve más lenta frente a una ALU monolítica optimizada. Asimismo, duplicar componentes puede generar mayor consumo de compuertas frente a un diseño específico de 32 bits. En conclusión, la decisión entre modularidad y monolitismo depende de si se prioriza simplicidad y reutilización (ALU16) o rendimiento absoluto y optimización de hardware (ALU32 dedicada).
 
