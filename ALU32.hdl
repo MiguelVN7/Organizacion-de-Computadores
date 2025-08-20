@@ -1,0 +1,61 @@
+/**
+ * ALU de 32 bits implementada usando dos ALU16
+ * Soporta operaciones aritméticas y lógicas en números de 32 bits
+ * con detección de overflow y banderas de estado
+ */
+CHIP ALU32 {
+    IN  x[32], y[32], zx, nx, zy, ny, f, no;
+    OUT out[32], zr, ng, overflow;
+
+    PARTS:
+    // Mitad baja (0..15)
+    ALU16(
+        x=x[0..15], y=y[0..15],
+        zx=zx, nx=nx, zy=zy, ny=ny, f=f, no=no,
+        cin=false,
+        out=outLow, zr=zrLow, ng=ngLow, cout=carryFromLow
+    );
+
+    // Carry a la mitad alta SOLO si es aritmética (f=1)
+    And(a=carryFromLow, b=f, out=carryToHigh);
+
+    // Mitad alta (16..31)
+    ALU16(
+        x=x[16..31], y=y[16..31],
+        zx=zx, nx=nx, zy=zy, ny=ny, f=f, no=no,
+        cin=carryToHigh,
+        out=outHigh, zr=zrHigh, ng=ngHigh, cout=carryFromHigh
+    );
+
+    // Construir salida de 32 bits con passthrough seguro (sin constantes 1-bit)
+    Mux16(a=outLow,  b=outLow,  sel=false, out=out[0..15]);
+    Mux16(a=outHigh, b=outHigh, sel=false, out=out[16..31]);
+
+    // Flags ZERO y NEGATIVE
+    And(a=zrLow, b=zrHigh, out=zr);
+    // ng = MSB de outHigh (bit 15)
+    Mux(a=false, b=outHigh[15], sel=true, out=ng);
+
+    // ---- Overflow (solo si f=1), usando signos post-normalización ----
+    // Xs = MSB de X tras zx/nx
+    Mux(a=x[31], b=false, sel=zx, out=x1s);
+    Not(in=x1s, out=nx1s);
+    Mux(a=x1s, b=nx1s, sel=nx, out=Xs);
+
+    // Ys = MSB de Y tras zy/ny
+    Mux(a=y[31], b=false, sel=zy, out=y1s);
+    Not(in=y1s, out=ny1s);
+    Mux(a=y1s, b=ny1s, sel=ny, out=Ys);
+
+    // Os = MSB del resultado final (ya con 'no') = outHigh[15]
+    Mux(a=false, b=outHigh[15], sel=true, out=Os);
+
+    // ov = (~(Xs ^ Ys)) & (Xs ^ Os), habilitado solo si f=1
+    Xor(a=Xs, b=Ys,  out=xsXorYs);
+    Not(in=xsXorYs,  out=sameSign);
+    Xor(a=Xs, b=Os,  out=xsXorOs);
+    And(a=sameSign, b=xsXorOs, out=ovSigned);
+    And(a=f, b=ovSigned, out=overflow);
+}
+
+
